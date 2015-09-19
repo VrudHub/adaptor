@@ -1,7 +1,11 @@
 set(exe_name "adaptor")
 
 set(sources
-    main.cxx
+    colours.cpp
+    main.cpp
+    screen.cpp
+    transforms.cpp
+    webcam.cpp
     )
 
 set(inc_dirs
