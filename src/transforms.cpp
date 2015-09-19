@@ -1,7 +1,7 @@
 #include "transforms.hpp"
 #include "utils.hpp"
 
-#define LIGHT_DIFF 32 // TODO
+#define LIGHT_DIFF 5 // TODO
 
 Mat* get_diff_area(Mat* dark, Mat* light) {
     int ch = dark->channels();
@@ -12,42 +12,43 @@ Mat* get_diff_area(Mat* dark, Mat* light) {
     assert(r == light->rows);
     assert(c == light->cols);
 
-    uchar *output = new uchar(r * c * ch);
+    uchar *output = new uchar[r * c * 3]();
 
     assert(dark->isContinuous() == light->isContinuous());
-    if(dark->isContinuous()) {
+    /*if(dark->isContinuous()) {
         c *= r;
         r = 1;
-    }
-    printf("%d, %d\n", c, r);
+    }*/
 
-    int c_ch = c * ch;
+    long c_ch = c * ch;
 
-    for(int i = 0; i < r; ++i) {
+    for(long i = 0; i < r; ++i) {
         uchar *d  = dark->ptr<uchar>(i);
         uchar *l  = light->ptr<uchar>(i);
-        for(int j = 0; j < c_ch; j += 3) {
-            assert(r * c_ch >= i * c_ch + j + 2);
-            int newval;
-            if(l[j] - d[j] + l[j+1] - d[j+1] + l[j+2] - d[j+2] > LIGHT_DIFF)
+        for(long j = 0; j < c_ch; j += 3) {
+            assert(r * c_ch > i * c_ch + j + 2);
+            uchar newval;
+            int diff = l[j] - d[j] + l[j+1] - d[j+1] + l[j+2] - d[j+2];
+            if(diff > LIGHT_DIFF)
                 newval = 255;
             else
                 newval = 0;
-            output[i * c_ch + j] = newval;
-            output[i * c_ch + j+1] = newval;
-            output[i * c_ch + j+2] = newval;
-            if(j >= 10755600)
-                printf("%d\n", j);
+            newval = 2;
+            assert(r * c * 3 > i * c * 3 + j+2);
+            output[i * c * 3 + j] = newval;
+            output[i * c * 3 + j+1] = newval;
+            output[i * c * 3 + j+2] = newval;
+            if((j == 5 || j == 6 || j == 7) && i == 1)
+                printf("ONCE\n");
         }
-        printf("%d\n", i);
     }
-    printf("f");
 
-    return new Mat(dark->rows, dark->cols, CV_8UC1, *output);
+    printf("%d, %d\n", dark->rows, dark->cols);
+    return new Mat(dark->rows, dark->cols, CV_8UC3, output);
+    //return new Mat(dark->rows, dark->cols, CV_8UC3, dark->ptr<uchar>(0));
 }
 
 void transforms::calculate_transforms(Mat* dark, Mat* light) {
     Mat* m = get_diff_area(dark, light);
-    printf("b\n");
     display_mat(m);
 }
