@@ -3,5 +3,5 @@ using namespace cv;
 
 class colours {
 public:
-    void calculate_colours(Mat* dark, Mat* light);
+    void calculate_colours(Mat* m);
 };

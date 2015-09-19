@@ -8,6 +8,8 @@ set(sources
     screen.hpp
     transforms.cpp
     transforms.hpp
+    utils.cpp
+    utils.hpp
     webcam.cpp
     webcam.hpp
     )

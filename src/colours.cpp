@@ -1,13 +1,7 @@
+#include <assert.h>
+
 #include "colours.hpp"
 
-void colours::calculate_colours(Mat* dark, Mat* light) {
-    int ch = dark->channels();
+void colours::calculate_colours(Mat* m) {
 
-    int r = dark->rows;
-    int c = dark->cols * ch;
-
-    if(dark->isContinuous()) {
-        c *= r;
-        r = 1;
-    }
 }
