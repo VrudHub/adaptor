@@ -4,6 +4,8 @@ set(sources
     colours.cpp
     colours.hpp
     main.cpp
+    project.cpp
+    project.hpp
     screen.cpp
     screen.hpp
     transforms.cpp
