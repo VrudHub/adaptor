@@ -3,5 +3,12 @@ using namespace cv;
 
 class transforms {
 public:
-    void calculate_transforms(Mat* dark, Mat* light);
+    bool calculate_transforms(Mat* dark, Mat* light);
+    void apply_transforms(Mat* m);
+
+private:
+    vector<Point2f> corners;
+
+    void get_corners(vector<Vec4i> lines);
+    void sort_corners(Point2f center);
 };
