@@ -4,13 +4,13 @@
 
 #include "screen-windows.hpp"
 
-Mat* screen_windows::capture() = {
+Mat* screen_windows::capture() {
     HDC screen = GetDC(GetDesktopWindow());
     int w = GetDeviceCaps(screen, HORZRES);
     int h = GetDeviceCaps(screen, VERTRES);
 
     HDC mem = CreateCompatibleDC(screen);
-    HBITMAP b = CreateCompatibleBitmap(scren, w, h);
+    HBITMAP b = CreateCompatibleBitmap(screen, w, h);
     HGDIOBJ obj = SelectObject(mem, b);
     BitBlt(mem, 0, 0, w, h, screen, 0, 0, SRCCOPY);
     SelectObject(mem, obj);

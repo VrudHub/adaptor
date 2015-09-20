@@ -1,5 +1,6 @@
 #pragma once
 #include <opencv2/opencv.hpp>
+#include <vector>
 using namespace cv;
 
 class transforms {
@@ -8,9 +9,9 @@ public:
     void apply_transforms(Mat* m);
 
 private:
-    vector<Point2f> corners;
-    vector<Point2f> corners_square;
+    std::vector<Point2f> corners;
+    std::vector<Point2f> corners_square;
 
-    void get_corners(vector<Vec4i> lines);
+    void get_corners(std::vector<Vec4i> lines);
     void sort_corners(Point2f center);
 };

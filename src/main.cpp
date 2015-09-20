@@ -54,10 +54,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    screen* s = NULL;
 #ifdef _WIN32
-    s = new screen_windows();
-#endif
+    screen_windows* s = new screen_windows();
 
     while(1) {
         if(s) {
@@ -70,6 +68,7 @@ int main(int argc, char *argv[]) {
     }
 
     delete s;
+#endif
     delete t;
     delete p;
     return 0;
