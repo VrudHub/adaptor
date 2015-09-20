@@ -12,6 +12,17 @@
 using namespace cv;
 using namespace std;
 
+Mat getWebcam() {
+    VideoCapture cap(0);
+    if(!cap.isOpened()) {
+        printf("NO\n");
+    }
+
+    Mat frame;
+    cap >> frame;
+    return frame;
+}
+
 int main(int argc, char *argv[]) {
     project* p = new project();
     if(p->err) {
@@ -27,9 +38,9 @@ int main(int argc, char *argv[]) {
     Mat* m = new Mat(PROJ_HEIGHT, PROJ_WIDTH, CV_8UC3, arr);
     p->display(m);
     delete m;
-
-    cout << "Press any key after you take black screenshot." << endl;
-    int i = getchar();
+    waitKey(30);
+    Mat dark = getWebcam();
+    waitKey(30);
 
     // light screenshot
     memset(arr, 255, PROJ_WIDTH * PROJ_HEIGHT * 3);
@@ -38,12 +49,16 @@ int main(int argc, char *argv[]) {
     delete m;
     free(arr);
 
-    cout << "Press any key after you take white screenshot." << endl;
-    i = getchar();
+    // TODO: get images from pi
+    //Mat dark = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/a.jpg", CV_LOAD_IMAGE_COLOR);
+    //Mat light = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/b.jpg", CV_LOAD_IMAGE_COLOR);
+    waitKey(30);
+    Mat light = getWebcam();
+    waitKey(30);
 
     // TODO: get images from pi
-    Mat dark = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/a.jpg", CV_LOAD_IMAGE_COLOR);
-    Mat light = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/b.jpg", CV_LOAD_IMAGE_COLOR);
+    //Mat dark = imread("dark.jpg", CV_LOAD_IMAGE_COLOR);
+    //Mat light = imread("light.jpg", CV_LOAD_IMAGE_COLOR);
 
     // calculate transforms
     transforms* t = new transforms();
