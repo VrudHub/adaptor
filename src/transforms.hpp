@@ -9,6 +9,7 @@ public:
 
 private:
     vector<Point2f> corners;
+    vector<Point2f> corners_square;
 
     void get_corners(vector<Vec4i> lines);
     void sort_corners(Point2f center);

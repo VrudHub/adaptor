@@ -94,11 +94,18 @@ void transforms::sort_corners(Point2f center) {;
     cout << tl_mod << endl;
     cout << tr_mod << endl;
 
+
     corners.clear();
-    corners.push_back(tl_mod);
-    corners.push_back(tr_mod);
-    corners.push_back(br_mod);
-    corners.push_back(bl_mod);
+    corners.push_back(tl);
+    corners.push_back(tr);
+    corners.push_back(br);
+    corners.push_back(bl);
+
+    corners_square.clear();
+    corners_square.push_back(tl_mod);
+    corners_square.push_back(tr_mod);
+    corners_square.push_back(br_mod);
+    corners_square.push_back(bl_mod);
 }
 
 int len_line(Vec4i a) {
@@ -197,7 +204,8 @@ void transforms::apply_transforms(Mat* m) {
     m_pts.push_back(Point2f(m->cols, m->rows));
     m_pts.push_back(Point2f(0, m->rows));
 
-    Mat transmtx = getPerspectiveTransform(m_pts, corners);
+    //Mat transmtx = getPerspectiveTransform(m_pts, corners);
+    Mat transmtx = getPerspectiveTransform(corners_square, corners);
 
     // apply transform
     warpPerspective(*m, *m, transmtx, m->size());
