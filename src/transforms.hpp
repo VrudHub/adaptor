@@ -5,8 +5,11 @@ using namespace cv;
 
 class transforms {
 public:
+    transforms();
     bool calculate_transforms(Mat* dark, Mat* light);
     void apply_transforms(Mat* m);
+
+    int demo_show_inner;
 
 private:
     std::vector<Point2f> corners;

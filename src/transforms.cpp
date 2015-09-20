@@ -7,7 +7,12 @@
 
 using namespace std;
 
-#define LIGHT_DIFF 64 // TODO
+#define LIGHT_DIFF 36 // TODO
+
+
+transforms::transforms() {
+    demo_show_inner = 0;
+}
 
 Mat* get_diff_area(Mat* dark, Mat* light) {
     int ch = dark->channels();
@@ -92,10 +97,6 @@ void transforms::sort_corners(Point2f center) {;
     Point2f bl_mod = Point2f(fmax(tl.x, bl.x), fmin(bl.y, br.y));
     Point2f br_mod = Point2f(fmin(tr.x, br.x), fmin(bl.y, br.y));
 
-    cout << tl_mod << endl;
-    cout << tr_mod << endl;
-
-
     corners.clear();
     corners.push_back(tl);
     corners.push_back(tr);
@@ -107,6 +108,8 @@ void transforms::sort_corners(Point2f center) {;
     corners_square.push_back(tr_mod);
     corners_square.push_back(br_mod);
     corners_square.push_back(bl_mod);
+
+    cout << "END OF SQUARES\n\n";
 }
 
 int len_line(Vec4i a) {
@@ -148,42 +151,41 @@ void filter_corners(vector<Point2f>& corners) {
         for(int i = 0; i < corners.size(); ++i) {
             for(int j = i + 1; j < corners.size(); ++j) {
                 float len = point_diff(corners[i], corners[j]);
-                cout << "Len: %f\n" << len;
                 if(len < min_len || min_len == -1) {
-                    cout << "!!!\n";
                     min_len = len;
                     index = i;
                 }
             }
         }
-        cout << "---\n";
         corners.erase(corners.begin()+index);
     }
 }
 
 bool transforms::calculate_transforms(Mat* dark, Mat* light) {
     Mat* m = get_diff_area(dark, light);
-    display_mat(m);
+    if(demo_show_inner)
+        display_mat(m);
     Canny(*m, *m, 100, 100, 3);
-    display_mat(m);
+    if(demo_show_inner)
+        display_mat(m);
 
     vector<Vec4i> lines;
     HoughLinesP(*m, lines, 1, CV_PI/180, 70, 30, 10);
 
     //filter_lines(lines);
 
-    cout << "Lines: %d\n" << lines.size();
+    cout << "Lines: " << lines.size() << endl;
     get_corners(lines);
 
-    cout <<"Corners 1: %d\n" << corners.size();
+    cout <<"Corners 1: " << corners.size() << endl;
     cout << corners << endl;
     filter_corners(corners);
-    cout<< "Corners 2: %d\n", corners.size();
+    cout<< "Corners 2: " << corners.size() << endl;
     cout << corners << endl;
 
     vector<Point2f> approx;
     approxPolyDP(Mat(corners), approx, arcLength(Mat(corners), true) * 0.02, true);
-    cout<< "approx: %d\n" << approx.size();
+    cout<< "approx: " << approx.size() << endl;
 
     if(approx.size() != 4)
         return false;
@@ -206,7 +208,11 @@ void transforms::apply_transforms(Mat* m) {
     m_pts.push_back(Point2f(0, m->rows));
 
     //Mat transmtx = getPerspectiveTransform(m_pts, corners);
-    Mat transmtx = getPerspectiveTransform(corners_square, corners);
+    Mat transmtx;
+    if(!demo_show_inner)
+        transmtx = getPerspectiveTransform(corners, corners_square);
+    else
+        transmtx = getPerspectiveTransform(m_pts, corners_square);
 
     // apply transform
     warpPerspective(*m, *m, transmtx, m->size());

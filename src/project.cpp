@@ -65,7 +65,9 @@ void project::display(Mat* m) {
     //Update the screen
     SDL_RenderPresent(ren);
 
-    SDL_Delay(5000);
+    printf("wiating\n");
+    waitKey(0);
+    printf("wiating 2\n");
 
     SDL_DestroyTexture(tex);
 }
