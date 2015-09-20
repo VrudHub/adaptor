@@ -17,16 +17,22 @@ set(sources
     )
 
 find_package(OpenCV)
+find_package(SDL2)
+find_package(SDL2_image)
 
 set(inc_dirs
     ${inc_dirs}
+${SDL2_INCLUDEDIR}
+${SDL2IMAGE_INCLUDE_DIR}
     )
 set(link_dirs
-    ${link_dirs}
+${link_dirs}
     )
 set(libs
     ${libs}
     ${OpenCV_LIBS}
+    ${SDL2_LIBRARY}
+    ${SDL2IMAGE_LIBRARY}
     )
 
 include_directories(${inc_dirs})
