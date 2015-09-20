@@ -2,7 +2,11 @@
 
 #include <opencv2/opencv.hpp>
 #include <SDL2/SDL.h>
+#ifdef __APPLE__
+#include <SDL_image.h>
+#elif
 #include <SDL2/SDL_image.h>
+#endef
 using namespace cv;
 
 class project {

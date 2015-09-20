@@ -147,15 +147,15 @@ void filter_corners(vector<Point2f>& corners) {
         for(int i = 0; i < corners.size(); ++i) {
             for(int j = i + 1; j < corners.size(); ++j) {
                 float len = point_diff(corners[i], corners[j]);
-                printf("Len: %f\n", len);
+                cout << "Len: %f\n" << len;
                 if(len < min_len || min_len == -1) {
-                    printf("!!!\n");
+                    cout << "!!!\n";
                     min_len = len;
                     index = i;
                 }
             }
         }
-        printf("---\n");
+        cout << "---\n";
         corners.erase(corners.begin()+index);
     }
 }
@@ -171,18 +171,18 @@ bool transforms::calculate_transforms(Mat* dark, Mat* light) {
 
     //filter_lines(lines);
 
-    printf("Lines: %d\n", lines.size());
+    cout << "Lines: %d\n" << lines.size();
     get_corners(lines);
 
-    printf("Corners 1: %d\n", corners.size());
+    cout <<"Corners 1: %d\n" << corners.size();
     cout << corners << endl;
     filter_corners(corners);
-    printf("Corners 2: %d\n", corners.size());
+    cout<< "Corners 2: %d\n", corners.size();
     cout << corners << endl;
 
     vector<Point2f> approx;
     approxPolyDP(Mat(corners), approx, arcLength(Mat(corners), true) * 0.02, true);
-    printf("approx: %d\n", approx.size());
+    cout<< "approx: %d\n" << approx.size();
 
     if(approx.size() != 4)
         return false;
@@ -210,3 +210,4 @@ void transforms::apply_transforms(Mat* m) {
     // apply transform
     warpPerspective(*m, *m, transmtx, m->size());
 }
+
