@@ -2,11 +2,9 @@
 #include <string>
 
 #include "project.hpp"
+#include "utils.hpp"
 
 using namespace std;
-
-#define PROJ_WIDTH 1024
-#define PROJ_HEIGHT 768
 
 project::project() {
     err = 1;

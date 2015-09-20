@@ -22,8 +22,9 @@ int main(int argc, char *argv[]) {
     }
 
     // dark screenshot
-    uchar arr[1] = {0};
-    Mat* m = new Mat(1, 1, CV_8UC1, arr);
+    uchar* arr = (uchar*)malloc(PROJ_WIDTH * PROJ_HEIGHT * 3);
+    memset(arr, 0, PROJ_WIDTH * PROJ_HEIGHT * 3);
+    Mat* m = new Mat(PROJ_HEIGHT, PROJ_WIDTH, CV_8UC3, arr);
     p->display(m);
     delete m;
 
@@ -31,17 +32,18 @@ int main(int argc, char *argv[]) {
     int i = getchar();
 
     // light screenshot
-    arr[0] = 1;
-    m = new Mat(1, 1, CV_8UC1, arr);
+    memset(arr, 255, PROJ_WIDTH * PROJ_HEIGHT * 3);
+    m = new Mat(PROJ_HEIGHT, PROJ_WIDTH, CV_8UC3, arr);
     p->display(m);
     delete m;
+    free(arr);
 
     cout << "Press any key after you take white screenshot." << endl;
     i = getchar();
 
     // TODO: get images from pi
-    Mat dark = imread("dark.jpg", CV_LOAD_IMAGE_COLOR);
-    Mat light = imread("light.jpg", CV_LOAD_IMAGE_COLOR);
+    Mat dark = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/a.jpg", CV_LOAD_IMAGE_COLOR);
+    Mat light = imread("C:/Users/Alyssa/Dropbox/Apps/Adaptor/b.jpg", CV_LOAD_IMAGE_COLOR);
 
     // calculate transforms
     transforms* t = new transforms();
