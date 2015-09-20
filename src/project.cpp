@@ -1,77 +1,73 @@
-#include "project.hpp"
-
 #include <iostream>
-#include <SDL2/SDL.h>
-#include <SDL_image.h>
 #include <string>
 
+#include "project.hpp"
 
 using namespace std;
 
+#define PROJ_WIDTH 1024
+#define PROJ_HEIGHT 768
 
-bool init()
-{
-    //Initialization flag
-    bool success = true;
-    
-    //Initialize SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-        cout << "SDL could not initialize! SDL Error: %s\n"<< SDL_GetError();
-        success = false;
+project::project() {
+    err = 1;
+
+    if (SDL_Init(SDL_INIT_VIDEO) != 0){
+        std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
+        return;
     }
-    else
-    {
-        //Create window
-        gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
-        if( gWindow == NULL )
-        {
-            cout<< "Window could not be created! SDL Error: %s\n" << SDL_GetError() ;
-            success = false;
-        }
-        else
-        {
-            //Initialize PNG loading
-            int imgFlags = IMG_INIT_PNG;
-            if( !( IMG_Init( imgFlags ) & imgFlags ) )
-            {
-                cout<<  "SDL_image could not initialize! SDL_image Error: %s\n"<< IMG_GetError();
-                success = false;
-            }
-            else
-            {
-                //Get window surface
-                gScreenSurface = SDL_GetWindowSurface( gWindow );
-            }
-        }
+
+    int display_num = SDL_GetNumVideoDisplays() - 1;
+    printf("display: %d\n", display_num);
+
+    win = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED_DISPLAY(display_num), SDL_WINDOWPOS_CENTERED_DISPLAY(display_num), PROJ_WIDTH, PROJ_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+    if(!win) {
+        std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
+        return;
     }
-    
-    return success;
+
+    ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!ren){
+        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    err = 0;
 }
 
-SDL_Surface* loadSurface( std::string path )
-{
-    //The final optimized image
-    SDL_Surface* optimizedSurface = NULL;
-    
-    //Load image at specified path
-    SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
-    if( loadedSurface == NULL )
-    {
-        cout<< "Unable to load image %s! SDL_image Error: %s\n", path.c_str() << IMG_GetError();
+project::~project() {
+    if(ren)
+        SDL_DestroyRenderer(ren);
+    if(win)
+        SDL_DestroyWindow(win);
+    SDL_Quit();
+}
+
+void project::display(Mat* m) {
+    assert(m->isContinuous());
+    SDL_Surface *s = SDL_CreateRGBSurfaceFrom(m->ptr<uchar>(0), m->cols, m->rows, 24, m->step, 0xff0000, 0x00ff00, 0x0000ff, 0);
+    //SDL_Surface *s = SDL_CreateRGBSurfaceFrom(img->imageData, img->width, img->height, img->depth * img->nChannels, img->widthStep, 0xff0000, 0x00ff00, 0x0000ff, 0);
+
+    if(!s) {
+        std::cout << "SDL_CreateRGBSurfaceFrom Error: " << SDL_GetError() << std::endl;
+        return;
     }
-    else
-    {
-        //Convert surface to screen format
-        optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, NULL );
-        if( optimizedSurface == NULL )
-        {
-            cout<<  "Unable to optimize image %s! SDL Error: %s\n", path.c_str() << SDL_GetError() ;
-        }
-        
-        //Get rid of old loaded surface
-        SDL_FreeSurface( loadedSurface );
+
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, s);
+    SDL_FreeSurface(s);
+
+    if(!tex) {
+        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+        return;
     }
-    
-    return optimizedSurface;
+
+    //First clear the renderer
+    SDL_RenderClear(ren);
+    //Draw the texture
+    SDL_RenderCopy(ren, tex, NULL, NULL);
+    //Update the screen
+    SDL_RenderPresent(ren);
+
+    SDL_Delay(5000);
+
+    SDL_DestroyTexture(tex);
 }
