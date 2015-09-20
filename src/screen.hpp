@@ -3,5 +3,6 @@
 using namespace cv;
 
 class screen {
+public:
     virtual Mat* capture() = 0;
 };

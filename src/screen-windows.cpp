@@ -38,7 +38,7 @@ Mat* screen_windows::capture() = {
         data[i+2] = tmp;
     }
 
-    return Mat(h, w, CV_8UC4, data);
+    return new Mat(h, w, CV_8UC4, data);
 }
 
 #endif
