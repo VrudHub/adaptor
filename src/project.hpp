@@ -4,9 +4,9 @@
 #include <SDL2/SDL.h>
 #ifdef __APPLE__
 #include <SDL_image.h>
-#elif
+#else
 #include <SDL2/SDL_image.h>
-#endef
+#endif
 using namespace cv;
 
 class project {

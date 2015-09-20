@@ -8,6 +8,8 @@ set(sources
     project.hpp
     screen.cpp
     screen.hpp
+    screen-windows.cpp
+    screen-windows.hpp
     transforms.cpp
     transforms.hpp
     utils.cpp
